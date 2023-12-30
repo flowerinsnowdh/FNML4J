@@ -1,0 +1,137 @@
+package online.flowerinsnow.fnml4j.code;
+
+import online.flowerinsnow.fnml4j.api.node.FNMLListNode;
+import online.flowerinsnow.fnml4j.api.node.FNMLObjectNode;
+import online.flowerinsnow.fnml4j.api.node.FNMLStringNode;
+import online.flowerinsnow.fnml4j.code.exception.FNMLParseException;
+import online.flowerinsnow.fnml4j.code.util.ListUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Objects;
+
+public abstract class FNML4J {
+    private FNML4J() {
+    }
+
+    public static @NotNull FNMLObjectNode parse(@NotNull String content) throws FNMLParseException {
+        Objects.requireNonNull(content);
+        final ArrayList<FNMLObjectNode> objectStack = new ArrayList<>();
+        final ArrayList<FNMLListNode> arrayStack = new ArrayList<>();
+        final ArrayList<ParserType> typeStack = new ArrayList<>();
+        final FNMLObjectNode root = new FNMLObjectNode("root");
+        typeStack.add(ParserType.OBJECT);
+        objectStack.add(root);
+        int lineNumber = 0;
+        String[] lines = content.split("\n");
+        String lineContent = null;
+        for (String line : lines) {
+            lineNumber++;
+            lineContent = line.trim();
+            if (lineContent.isEmpty() || lineContent.startsWith("# ")) { // 是空行或者注释行
+                continue;
+            }
+            switch (ListUtils.getLastOne(typeStack)) {
+                case OBJECT -> {
+                    int indexOf = lineContent.indexOf("'");
+                    if (indexOf != lineContent.length() - 1 && lineContent.endsWith("'")) { // 是字符串类型
+                        String name = lineContent.substring(0, indexOf).trim();
+                        String value = lineContent.substring(indexOf).trim();
+                        if (!value.startsWith("'")) {
+                            throwParseException("Bad syntax", lineNumber, lineContent);
+                            return null;
+                        }
+                        value = value.substring(1, value.length() - 1);
+                        ListUtils.getLastOne(objectStack).set(name, new FNMLStringNode(name, value));
+                    } else if (lineContent.endsWith("{")) { // 开启新对象
+                        String name = lineContent.substring(0, lineContent.length() - 1).trim();
+                        FNMLObjectNode node = new FNMLObjectNode(name);
+                        ListUtils.getLastOne(objectStack).set(name, node);
+                        objectStack.add(node); // 将新对象压入栈
+                        typeStack.add(ParserType.OBJECT); // 将新类型压入栈
+                    } else if (lineContent.equals("}")) { // 闭合最新对象
+                        typeStack.remove(typeStack.size() - 1); // 从栈中弹出最顶类型
+                        if (typeStack.isEmpty()) {
+                            throwParseException("End of file", lineNumber, lineContent);
+                            return null;
+                        }
+                        objectStack.remove(objectStack.size() - 1);  // 从栈中弹出最新对象
+                    } else if (lineContent.endsWith("[")) { // 开启新列表
+                        String name = lineContent.substring(0, lineContent.length() - 1).trim();
+                        FNMLListNode node = new FNMLListNode(name);
+                        ListUtils.getLastOne(objectStack).set(name, node); // 将新列表压入栈
+                        arrayStack.add(node);
+                        typeStack.add(ParserType.LIST); // 将新类型压入栈
+                    } else if (lineContent.equals("]")) { // 闭合栈最顶列表，但栈最顶是对象
+                        throwParseException("'}' required.", lineNumber, lineContent);
+                        return null;
+                    } else {
+                        throwParseException("Bad syntax", lineNumber, lineContent);
+                    }
+                }
+                case LIST -> {
+                    if (lineContent.startsWith("'") && lineContent.endsWith("'")) { // 是字符串类型
+                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
+                        String value = lineContent;
+                        if (!value.startsWith("'")) {
+                            throwParseException("Bad syntax", lineNumber, lineContent);
+                            return null;
+                        }
+                        value = value.substring(1, lineContent.length() - 1);
+                        ListUtils.getLastOne(arrayStack).add(new FNMLStringNode(name, value));
+                    } else if (lineContent.endsWith("{")) { // 开启新对象
+                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
+                        FNMLObjectNode node = new FNMLObjectNode(name);
+                        ListUtils.getLastOne(arrayStack).add(node);
+                        objectStack.add(node); // 将新对象压入栈
+                        typeStack.add(ParserType.OBJECT); // 将新类型压入栈
+                    } else if (lineContent.equals("}")) { // 闭合最新对象，但栈最顶是列表
+                        throwParseException("']' required.", lineNumber, lineContent);
+                        return null;
+                    } else if (lineContent.endsWith("[")) { // 开启新列表
+                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
+                        FNMLListNode node = new FNMLListNode(name);
+                        ListUtils.getLastOne(arrayStack).add(node); // 将新列表压入栈
+                        arrayStack.add(node);
+                        typeStack.add(ParserType.LIST); // 将新类型压入栈
+                    } else if (lineContent.equals("]")) { // 闭合栈最顶列表
+                        typeStack.remove(typeStack.size() - 1); // 从栈中弹出最顶类型
+                        if (typeStack.isEmpty()) {
+                            throwParseException("End of file", lineNumber, lineContent);
+                            return null;
+                        }
+                        objectStack.remove(objectStack.size() - 1);  // 从栈中弹出最新对象
+                    } else {
+                        throwParseException("Bad syntax", lineNumber, lineContent);
+                    }
+                }
+            }
+        }
+        if (typeStack.size() != 1) {
+            throwParseException("End of file", lineNumber, lineContent);
+        }
+        return root;
+    }
+
+    public static @NotNull FNMLObjectNode parse(@NotNull File file, @NotNull Charset charset) throws IOException, FNMLParseException {
+        Objects.requireNonNull(file);
+        Objects.requireNonNull(charset);
+        return parse(file.toPath(), charset);
+    }
+
+    public static @NotNull FNMLObjectNode parse(@NotNull Path path, @NotNull Charset charset) throws IOException, FNMLParseException {
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(charset);
+        return parse(Files.readString(path, charset));
+    }
+
+    private static void throwParseException(@Nullable String message, int lineNumber, @Nullable String lineContent) {
+        throw new FNMLParseException("Failed to parse FNML: " + message + " (line " + lineNumber + ": '" + lineContent + "')");
+    }
+}
