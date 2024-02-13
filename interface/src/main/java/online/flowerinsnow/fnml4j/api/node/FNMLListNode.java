@@ -1,5 +1,6 @@
 package online.flowerinsnow.fnml4j.api.node;
 
+import online.flowerinsnow.fnml4j.api.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -83,11 +84,11 @@ public class FNMLListNode extends NamedFNMLNode implements Iterable<IFNMLNode> {
     public void write(int offset, @NotNull Writer writer) throws IOException {
         writer.write("[\n");
         for (IFNMLNode node : getList()) {
-            writer.write("    ".repeat(offset + 1));
+            writer.write(StringUtils.repeat("    ", offset + 1));
             node.write(offset + 1, writer);
             writer.write("\n");
         }
-        writer.write("    ".repeat(offset) + "]");
+        writer.write(StringUtils.repeat("    ", offset) + "]");
     }
 
     @Override

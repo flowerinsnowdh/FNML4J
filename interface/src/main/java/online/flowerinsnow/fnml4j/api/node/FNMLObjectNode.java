@@ -2,6 +2,7 @@ package online.flowerinsnow.fnml4j.api.node;
 
 import online.flowerinsnow.fnml4j.api.exception.WrongNodeTypeException;
 import online.flowerinsnow.fnml4j.api.parser.IFNMLNodeParser;
+import online.flowerinsnow.fnml4j.api.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,14 +138,14 @@ public class FNMLObjectNode extends NamedFNMLNode {
     public void write(int offset, @NotNull Writer writer) throws IOException {
         writer.write("{\n");
         writeRoot(offset + 1, writer);
-        writer.write("    ".repeat(offset) + "}");
+        writer.write(StringUtils.repeat("    ", offset) + "}");
     }
 
     public void writeRoot(int offset, @NotNull Writer writer) throws IOException {
         for (Map.Entry<String, ? extends IFNMLNode> entry : getChildNodes().entrySet()) {
             String name = entry.getKey();
             IFNMLNode node = entry.getValue();
-            writer.write("    ".repeat(offset) + name + " ");
+            writer.write(StringUtils.repeat("    ", offset) + name + " ");
             node.write(offset, writer);
             writer.write("\n");
         }

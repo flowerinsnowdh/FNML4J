@@ -12,18 +12,7 @@ import java.io.StringWriter;
 public class ReadAndWriteTest {
     @Test
     public void test() throws IOException {
-        String content = """
-                # 我是注释
-                field1 '20231231'
-                field2 'value2'
-                object3 {
-                    field4 'value4'
-                    list5 [
-                        '456'
-                        '789'
-                    ]
-                }
-                """;
+        String content = "# 我是注释\nfield1 '20231231'\nfield2 'value2'\nobject3 {\n    field4 'value4'\n    list5 [\n    '456'\n    '789'\n]\n}";
         FNMLObjectNode node = FNML4J.parse(content);
         StringWriter sw = new StringWriter();
         node.writeRoot(0, sw);
