@@ -1,4 +1,4 @@
-package online.flowerinsnow.fnml4j.code.exception;
+package online.flowerinsnow.fnml4j.core.exception;
 
 /**
  * <p>当FNML文件/字符串解释失败时抛出</p>

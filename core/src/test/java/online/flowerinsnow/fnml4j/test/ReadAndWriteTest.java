@@ -3,7 +3,7 @@ package online.flowerinsnow.fnml4j.test;
 import online.flowerinsnow.fnml4j.api.node.ObjectNode;
 import online.flowerinsnow.fnml4j.api.node.StringNode;
 import online.flowerinsnow.fnml4j.api.parser.present.FNML4JPresentParser;
-import online.flowerinsnow.fnml4j.code.FNML4J;
+import online.flowerinsnow.fnml4j.core.FNML4J;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

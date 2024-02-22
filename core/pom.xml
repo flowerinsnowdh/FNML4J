@@ -6,7 +6,7 @@
     <parent>
         <groupId>online.flowerinsnow.fnml</groupId>
         <artifactId>fnml4j-parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
 
     <artifactId>fnml4j-core</artifactId>

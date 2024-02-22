@@ -1,4 +1,4 @@
-package online.flowerinsnow.fnml4j.code.util;
+package online.flowerinsnow.fnml4j.core.util;
 
 import org.jetbrains.annotations.NotNull;
 

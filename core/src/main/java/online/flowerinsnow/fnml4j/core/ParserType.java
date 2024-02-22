@@ -1,4 +1,4 @@
-package online.flowerinsnow.fnml4j.code;
+package online.flowerinsnow.fnml4j.core;
 
 public enum ParserType {
     OBJECT(1),

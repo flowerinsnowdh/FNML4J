@@ -1,11 +1,11 @@
-package online.flowerinsnow.fnml4j.code;
+package online.flowerinsnow.fnml4j.core;
 
 import online.flowerinsnow.fnml4j.api.node.ListNode;
 import online.flowerinsnow.fnml4j.api.node.ObjectNode;
 import online.flowerinsnow.fnml4j.api.node.StringNode;
-import online.flowerinsnow.fnml4j.code.exception.FNMLParseException;
-import online.flowerinsnow.fnml4j.code.util.ASCIIUtils;
-import online.flowerinsnow.fnml4j.code.util.ListUtils;
+import online.flowerinsnow.fnml4j.core.exception.FNMLParseException;
+import online.flowerinsnow.fnml4j.core.util.ASCIIUtils;
+import online.flowerinsnow.fnml4j.core.util.ListUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
