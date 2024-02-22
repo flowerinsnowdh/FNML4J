@@ -1,13 +1,14 @@
 package online.flowerinsnow.fnml4j.api.node;
 
+import online.flowerinsnow.fnml4j.api.exception.UnexpectedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public abstract class NamedFNMLNode implements IFNMLNode {
+public abstract class NamedNode implements IFNMLNode, Cloneable {
     @NotNull private final String name;
 
-    public NamedFNMLNode(@NotNull String name) {
+    public NamedNode(@NotNull String name) {
         this.name = Objects.requireNonNull(name);
     }
 
@@ -15,7 +16,7 @@ public abstract class NamedFNMLNode implements IFNMLNode {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        NamedFNMLNode that = (NamedFNMLNode) object;
+        NamedNode that = (NamedNode) object;
         return name.equals(that.name);
     }
 
@@ -28,8 +29,17 @@ public abstract class NamedFNMLNode implements IFNMLNode {
 
     @Override
     public String toString() {
-        return "NamedFNMLNode{" +
+        return "NamedNode{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public NamedNode clone() {
+        try {
+            return (NamedNode) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new UnexpectedException(e);
+        }
     }
 }

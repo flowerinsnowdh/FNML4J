@@ -1,8 +1,8 @@
 package online.flowerinsnow.fnml4j.code;
 
-import online.flowerinsnow.fnml4j.api.node.FNMLListNode;
-import online.flowerinsnow.fnml4j.api.node.FNMLObjectNode;
-import online.flowerinsnow.fnml4j.api.node.FNMLStringNode;
+import online.flowerinsnow.fnml4j.api.node.ListNode;
+import online.flowerinsnow.fnml4j.api.node.ObjectNode;
+import online.flowerinsnow.fnml4j.api.node.StringNode;
 import online.flowerinsnow.fnml4j.code.exception.FNMLParseException;
 import online.flowerinsnow.fnml4j.code.util.ASCIIUtils;
 import online.flowerinsnow.fnml4j.code.util.ListUtils;
@@ -21,12 +21,12 @@ public abstract class FNML4J {
     private FNML4J() {
     }
 
-    public static @NotNull FNMLObjectNode parse(@NotNull String content) throws FNMLParseException {
+    public static @NotNull ObjectNode parse(@NotNull String content) throws FNMLParseException {
         Objects.requireNonNull(content);
-        final ArrayList<FNMLObjectNode> objectStack = new ArrayList<>();
-        final ArrayList<FNMLListNode> arrayStack = new ArrayList<>();
+        final ArrayList<ObjectNode> objectStack = new ArrayList<>();
+        final ArrayList<ListNode> arrayStack = new ArrayList<>();
         final ArrayList<ParserType> typeStack = new ArrayList<>();
-        final FNMLObjectNode root = new FNMLObjectNode("root");
+        final ObjectNode root = new ObjectNode("root");
         typeStack.add(ParserType.OBJECT);
         objectStack.add(root);
         int lineNumber = 0;
@@ -49,11 +49,11 @@ public abstract class FNML4J {
                             return null;
                         }
                         value = ASCIIUtils.escape(value.substring(1, value.length() - 1)); // 去掉开头的单引号、转义
-                        ListUtils.getLastOne(objectStack).set(name, new FNMLStringNode(name, value));
+                        ListUtils.getLastOne(objectStack).set(name, new StringNode(name, value));
                     } else {
                         String name = lineContent.substring(0, lineContent.length() - 1).trim();
                         if (lineContent.endsWith("{")) { // 开启新对象
-                            FNMLObjectNode node = new FNMLObjectNode(name);
+                            ObjectNode node = new ObjectNode(name);
                             ListUtils.getLastOne(objectStack).set(name, node);
                             objectStack.add(node); // 将新对象压入栈
                             typeStack.add(ParserType.OBJECT); // 将新类型压入栈
@@ -65,7 +65,7 @@ public abstract class FNML4J {
                             }
                             objectStack.remove(objectStack.size() - 1);  // 从栈中弹出最新对象
                         } else if (lineContent.endsWith("[")) { // 开启新列表
-                            FNMLListNode node = new FNMLListNode(name);
+                            ListNode node = new ListNode(name);
                             ListUtils.getLastOne(objectStack).set(name, node); // 将新列表压入栈
                             arrayStack.add(node);
                             typeStack.add(ParserType.LIST); // 将新类型压入栈
@@ -87,10 +87,10 @@ public abstract class FNML4J {
                             return null;
                         }
                         value = ASCIIUtils.escape(value.substring(1, lineContent.length() - 1)); // 去掉开头的单引号、转义
-                        ListUtils.getLastOne(arrayStack).add(new FNMLStringNode(name, value));
+                        ListUtils.getLastOne(arrayStack).add(new StringNode(name, value));
                     } else if (lineContent.endsWith("{")) { // 开启新对象
                         String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
-                        FNMLObjectNode node = new FNMLObjectNode(name);
+                        ObjectNode node = new ObjectNode(name);
                         ListUtils.getLastOne(arrayStack).add(node);
                         objectStack.add(node); // 将新对象压入栈
                         typeStack.add(ParserType.OBJECT); // 将新类型压入栈
@@ -99,7 +99,7 @@ public abstract class FNML4J {
                         return null;
                     } else if (lineContent.endsWith("[")) { // 开启新列表
                         String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
-                        FNMLListNode node = new FNMLListNode(name);
+                        ListNode node = new ListNode(name);
                         ListUtils.getLastOne(arrayStack).add(node); // 将新列表压入栈
                         arrayStack.add(node);
                         typeStack.add(ParserType.LIST); // 将新类型压入栈
@@ -123,13 +123,13 @@ public abstract class FNML4J {
         return root;
     }
 
-    public static @NotNull FNMLObjectNode parse(@NotNull File file, @NotNull Charset charset) throws IOException, FNMLParseException {
+    public static @NotNull ObjectNode parse(@NotNull File file, @NotNull Charset charset) throws IOException, FNMLParseException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(charset);
         return parse(file.toPath(), charset);
     }
 
-    public static @NotNull FNMLObjectNode parse(@NotNull Path path, @NotNull Charset charset) throws IOException, FNMLParseException {
+    public static @NotNull ObjectNode parse(@NotNull Path path, @NotNull Charset charset) throws IOException, FNMLParseException {
         Objects.requireNonNull(path);
         Objects.requireNonNull(charset);
         return parse(new String(Files.readAllBytes(path), charset));

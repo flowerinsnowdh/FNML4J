@@ -18,14 +18,14 @@ import java.util.*;
  * }</pre>
  * <p><strong>非线程安全类，遍历时不会快速失败</strong></p>
  */
-public class FNMLListNode extends NamedFNMLNode implements Iterable<IFNMLNode> {
-    @NotNull private final List<IFNMLNode> list;
+public class ListNode extends NamedNode implements Iterable<IFNMLNode> {
+    @NotNull private ArrayList<IFNMLNode> list;
 
     /**
      * <p>创建一个空的、带名称的新的列表节点</p>
      * @param name 名称
      */
-    public FNMLListNode(@NotNull String name) {
+    public ListNode(@NotNull String name) {
         this(name, new ArrayList<>());
     }
 
@@ -34,7 +34,7 @@ public class FNMLListNode extends NamedFNMLNode implements Iterable<IFNMLNode> {
      * @param name 名称
      * @param list 数据
      */
-    public FNMLListNode(@NotNull String name, @NotNull List<IFNMLNode> list) {
+    public ListNode(@NotNull String name, @NotNull List<IFNMLNode> list) {
         super(name);
         Objects.requireNonNull(list);
         this.list = new ArrayList<>(list);
@@ -96,7 +96,7 @@ public class FNMLListNode extends NamedFNMLNode implements Iterable<IFNMLNode> {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
-        FNMLListNode that = (FNMLListNode) object;
+        ListNode that = (ListNode) object;
         return list.equals(that.list);
     }
 
@@ -111,8 +111,16 @@ public class FNMLListNode extends NamedFNMLNode implements Iterable<IFNMLNode> {
     @Override
     public String toString() {
         return "FNMLListNode{" +
-                "super=" + super.hashCode() +
+                "super=" + super.toString() +
                 ", list=" + list +
                 '}';
+    }
+
+    @Override
+    public ListNode clone() {
+        ListNode clone = (ListNode) super.clone();
+        //noinspection unchecked
+        clone.list = (ArrayList<IFNMLNode>) this.list.clone();
+        return clone;
     }
 }

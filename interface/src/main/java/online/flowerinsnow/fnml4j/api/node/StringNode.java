@@ -10,13 +10,13 @@ import java.util.Objects;
  * <p>代表一个FNML字符串节点</p>
  * <p>例如</p>
  * <pre>{@literal
- *     field1 = 'value1'
+ *     field1 'value1'
  * }</pre>
  */
-public class FNMLStringNode extends NamedFNMLNode {
+public class StringNode extends NamedNode {
     @NotNull private String string;
 
-    public FNMLStringNode(@NotNull String name, @NotNull String string) {
+    public StringNode(@NotNull String name, @NotNull String string) {
         super(name);
         this.string = Objects.requireNonNull(string);
     }
@@ -47,7 +47,7 @@ public class FNMLStringNode extends NamedFNMLNode {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
-        FNMLStringNode that = (FNMLStringNode) object;
+        StringNode that = (StringNode) object;
         return string.equals(that.string);
     }
 
@@ -61,9 +61,14 @@ public class FNMLStringNode extends NamedFNMLNode {
 
     @Override
     public String toString() {
-        return "FNMLStringNode{" +
+        return "StringNode{" +
                 "super=" + super.toString() +
                 ", string='" + string + '\'' +
                 '}';
+    }
+
+    @Override
+    public StringNode clone() {
+        return (StringNode) super.clone();
     }
 }

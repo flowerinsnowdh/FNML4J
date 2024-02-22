@@ -4,13 +4,14 @@ public abstract class FNML4JPresentParser {
     private FNML4JPresentParser() {
     }
 
-    public static final FNMLByteNodeParser BYTE = new FNMLByteNodeParser();
-    public static final FNMLShortNodeParser SHORT = new FNMLShortNodeParser();
-    public static final FNMLIntNodeParser INT = new FNMLIntNodeParser();
-    public static final FNMLLongNodeParser LONG = new FNMLLongNodeParser();
-    public static final FNMLFloatNodeParser FLOAT = new FNMLFloatNodeParser();
-    public static final FNMLDoubleNodeParser DOUBLE = new FNMLDoubleNodeParser();
-    public static final FNMLStringNodeParser STRING = new FNMLStringNodeParser();
-    public static final FNMLUUIDNodeParser UUID = new FNMLUUIDNodeParser();
-    public static final FNMLStringListNodeParser STRING_LIST = new FNMLStringListNodeParser();
+    public static final BooleanNodeParser BOOLEAN = new BooleanNodeParser();
+    public static final ByteNodeParser BYTE = new ByteNodeParser();
+    public static final ShortNodeParser SHORT = new ShortNodeParser();
+    public static final IntNodeParser INT = new IntNodeParser();
+    public static final LongNodeParser LONG = new LongNodeParser();
+    public static final FloatNodeParser FLOAT = new FloatNodeParser();
+    public static final DoubleNodeParser DOUBLE = new DoubleNodeParser();
+    public static final StringNodeParser STRING = new StringNodeParser();
+    public static final UUIDNodeParser UUID = new UUIDNodeParser();
+    public static final StringListNodeParser STRING_LIST = new StringListNodeParser();
 }

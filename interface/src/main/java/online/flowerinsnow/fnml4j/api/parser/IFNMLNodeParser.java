@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
  * <p>解析FNML节点为Java类型的解析器</p>
  * @param <T> Java类型
  * @param <N> 节点类型
- * @see FNMLStringNodeParser
- * @see FNMLListNodeParser
+ * @see AbstractStringNodeParser
+ * @see AbstractListNodeParser
  */
 public interface IFNMLNodeParser<T, N extends IFNMLNode> {
     /**

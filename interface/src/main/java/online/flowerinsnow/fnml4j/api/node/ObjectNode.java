@@ -15,19 +15,19 @@ import java.util.*;
  * <p>例如</p>
  * <pre>{@literal
  *     object1 {
- *         field1 = 'value1'
- *         field2 = 'value2'
+ *         field1 'value1'
+ *         field2 'value2'
  *     }
  * }</pre>
  */
-public class FNMLObjectNode extends NamedFNMLNode {
-    private final Map<String, IFNMLNode> childNodes;
+public class ObjectNode extends NamedNode {
+    @NotNull private LinkedHashMap<String, IFNMLNode> childNodes;
 
     /**
      * <p>创建一个空的、带名称的FNML对象节点</p>
      * @param name 名称
      */
-    public FNMLObjectNode(@NotNull String name) {
+    public ObjectNode(@NotNull String name) {
         this(name, new LinkedHashMap<>());
     }
 
@@ -36,7 +36,7 @@ public class FNMLObjectNode extends NamedFNMLNode {
      * @param name 名称
      * @param childNodes 数据
      */
-    public FNMLObjectNode(@NotNull String name, @NotNull Map<String, IFNMLNode> childNodes) {
+    public ObjectNode(@NotNull String name, @NotNull Map<String, IFNMLNode> childNodes) {
         super(name);
         Objects.requireNonNull(childNodes);
         this.childNodes = new LinkedHashMap<>(childNodes);
@@ -67,7 +67,7 @@ public class FNMLObjectNode extends NamedFNMLNode {
      * @param name 指定名称
      * @return 指定名称的子节点
      * @param <T> 子节点类型
-     * @see FNMLObjectNode#getChildNode(String) 
+     * @see ObjectNode#getChildNode(String)
      */
     public <T extends IFNMLNode> @NotNull T getChildNodeNotNull(@NotNull String name) {
         Objects.requireNonNull(name);
@@ -103,20 +103,6 @@ public class FNMLObjectNode extends NamedFNMLNode {
     }
 
     /**
-     * <p>获取子节点的键集合</p>
-     * @return 子节点的键集合
-     */
-    public @NotNull Set<String> keySet() {
-        return childNodes.keySet();
-    }
-
-    public void set(@NotNull String name, @NotNull IFNMLNode node) {
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(node);
-        childNodes.put(name, node);
-    }
-
-    /**
      * <p>获取指定名称的子节点，并解析为Java类型，并检查非空</p>
      * <p>使用传参parser作为解析器</p>
      * <p>子节点类型必须为nodeType或子类，否则将会抛出{@link WrongNodeTypeException}</p>
@@ -128,10 +114,24 @@ public class FNMLObjectNode extends NamedFNMLNode {
      * @param <T> Java类型
      * @param <N> 节点类型
      * @param <P> 解析器类型
-     * @see FNMLObjectNode#getChildNode(String, IFNMLNodeParser, Class)
+     * @see ObjectNode#getChildNode(String, IFNMLNodeParser, Class)
      */
-    public <T, N extends IFNMLNode, P extends IFNMLNodeParser<T, N>> @Nullable T getChildNodeNotNull(@NotNull String name, @NotNull P parser, @NotNull Class<N> nodeType) {
+    public <T, N extends IFNMLNode, P extends IFNMLNodeParser<T, N>> @NotNull T getChildNodeNotNull(@NotNull String name, @NotNull P parser, @NotNull Class<N> nodeType) {
         return Objects.requireNonNull(getChildNode(name, parser, nodeType));
+    }
+
+    /**
+     * <p>获取子节点的键集合</p>
+     * @return 子节点的键集合
+     */
+    public @NotNull Set<String> keySet() {
+        return childNodes.keySet();
+    }
+
+    public void set(@NotNull String name, @NotNull IFNMLNode node) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(node);
+        childNodes.put(name, node);
     }
 
     @Override
@@ -149,5 +149,38 @@ public class FNMLObjectNode extends NamedFNMLNode {
             node.write(offset, writer);
             writer.write("\n");
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        ObjectNode that = (ObjectNode) object;
+        return childNodes.equals(that.childNodes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + super.hashCode();
+        result = 31 * result + childNodes.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectNode{" +
+                "super=" + super.toString() +
+                ", childNodes=" + childNodes +
+                '}';
+    }
+
+    @Override
+    public ObjectNode clone() {
+        ObjectNode clone = (ObjectNode) super.clone();
+        //noinspection unchecked
+        clone.childNodes = (LinkedHashMap<String, IFNMLNode>) this.childNodes.clone();
+        return clone;
     }
 }

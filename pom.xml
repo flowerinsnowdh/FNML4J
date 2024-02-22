@@ -6,7 +6,7 @@
 
     <groupId>online.flowerinsnow.fnml</groupId>
     <artifactId>fnml4j-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
     <modules>
         <module>interface</module>
@@ -31,8 +31,8 @@
 
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/flowerinsnowdh/FNML4J</url>
+            <id>flowerinsnow</id>
+            <url>https://repo.flowerinsnow.online/repository/maven-opensource/</url>
         </repository>
     </distributionManagement>
 </project>
