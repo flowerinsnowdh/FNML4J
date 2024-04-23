@@ -26,7 +26,7 @@ public abstract class FNML4J {
         final ArrayList<ObjectNode> objectStack = new ArrayList<>();
         final ArrayList<ListNode> arrayStack = new ArrayList<>();
         final ArrayList<ParserType> typeStack = new ArrayList<>();
-        final ObjectNode root = new ObjectNode("root");
+        final ObjectNode root = new ObjectNode();
         typeStack.add(ParserType.OBJECT);
         objectStack.add(root);
         int lineNumber = 0;
@@ -49,11 +49,11 @@ public abstract class FNML4J {
                             return null;
                         }
                         value = ASCIIUtils.escape(value.substring(1, value.length() - 1)); // 去掉开头的单引号、转义
-                        ListUtils.getLastOne(objectStack).set(name, new StringNode(name, value));
+                        ListUtils.getLastOne(objectStack).set(name, new StringNode(value));
                     } else {
                         String name = lineContent.substring(0, lineContent.length() - 1).trim();
                         if (lineContent.endsWith("{")) { // 开启新对象
-                            ObjectNode node = new ObjectNode(name);
+                            ObjectNode node = new ObjectNode();
                             ListUtils.getLastOne(objectStack).set(name, node);
                             objectStack.add(node); // 将新对象压入栈
                             typeStack.add(ParserType.OBJECT); // 将新类型压入栈
@@ -65,7 +65,7 @@ public abstract class FNML4J {
                             }
                             objectStack.remove(objectStack.size() - 1);  // 从栈中弹出最新对象
                         } else if (lineContent.endsWith("[")) { // 开启新列表
-                            ListNode node = new ListNode(name);
+                            ListNode node = new ListNode();
                             ListUtils.getLastOne(objectStack).set(name, node); // 将新列表压入栈
                             arrayStack.add(node);
                             typeStack.add(ParserType.LIST); // 将新类型压入栈
@@ -80,17 +80,15 @@ public abstract class FNML4J {
                 }
                 case LIST: {
                     if (lineContent.startsWith("'") && lineContent.endsWith("'")) { // 是字符串类型
-                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
                         String value = lineContent;
                         if (!value.startsWith("'")) {
                             throwParseException("Bad syntax", lineNumber, lineContent);
                             return null;
                         }
                         value = ASCIIUtils.escape(value.substring(1, lineContent.length() - 1)); // 去掉开头的单引号、转义
-                        ListUtils.getLastOne(arrayStack).add(new StringNode(name, value));
+                        ListUtils.getLastOne(arrayStack).add(new StringNode(value));
                     } else if (lineContent.endsWith("{")) { // 开启新对象
-                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
-                        ObjectNode node = new ObjectNode(name);
+                        ObjectNode node = new ObjectNode();
                         ListUtils.getLastOne(arrayStack).add(node);
                         objectStack.add(node); // 将新对象压入栈
                         typeStack.add(ParserType.OBJECT); // 将新类型压入栈
@@ -98,8 +96,7 @@ public abstract class FNML4J {
                         throwParseException("']' required.", lineNumber, lineContent);
                         return null;
                     } else if (lineContent.endsWith("[")) { // 开启新列表
-                        String name = Integer.toString(ListUtils.getLastOne(arrayStack).size());
-                        ListNode node = new ListNode(name);
+                        ListNode node = new ListNode();
                         ListUtils.getLastOne(arrayStack).add(node); // 将新列表压入栈
                         arrayStack.add(node);
                         typeStack.add(ParserType.LIST); // 将新类型压入栈

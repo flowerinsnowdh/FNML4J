@@ -13,9 +13,9 @@ public class WriteTest {
     @Test
     public void test() throws IOException {
         LinkedHashMap<String, IFNMLNode> data = new LinkedHashMap<>();
-        data.put("field1", new StringNode("field1", "Hello"));
-        data.put("field2", new StringNode("field2", "World"));
-        ObjectNode node = new ObjectNode("root", data);
+        data.put("field1", new StringNode("Hello"));
+        data.put("field2", new StringNode("World"));
+        ObjectNode node = new ObjectNode(data);
         StringWriter writer = new StringWriter();
         node.writeRoot(0, writer);
         System.out.println(writer);
