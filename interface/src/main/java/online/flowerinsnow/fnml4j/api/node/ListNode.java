@@ -1,5 +1,6 @@
 package online.flowerinsnow.fnml4j.api.node;
 
+import online.flowerinsnow.fnml4j.api.exception.UnexpectedException;
 import online.flowerinsnow.fnml4j.api.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,24 +19,21 @@ import java.util.*;
  * }</pre>
  * <p><strong>非线程安全类，遍历时不会快速失败</strong></p>
  */
-public class ListNode extends NamedNode implements Iterable<IFNMLNode> {
+public class ListNode implements IFNMLNode, Iterable<IFNMLNode> {
     @NotNull private ArrayList<IFNMLNode> list;
 
     /**
      * <p>创建一个空的、带名称的新的列表节点</p>
-     * @param name 名称
      */
-    public ListNode(@NotNull String name) {
-        this(name, new ArrayList<>());
+    public ListNode() {
+        this(new ArrayList<>());
     }
 
     /**
      * <p>创建一个带数据的、带mkig的新的列表节点</p>
-     * @param name 名称
      * @param list 数据
      */
-    public ListNode(@NotNull String name, @NotNull List<IFNMLNode> list) {
-        super(name);
+    public ListNode(@NotNull List<IFNMLNode> list) {
         Objects.requireNonNull(list);
         this.list = new ArrayList<>(list);
     }
@@ -118,7 +116,12 @@ public class ListNode extends NamedNode implements Iterable<IFNMLNode> {
 
     @Override
     public ListNode clone() {
-        ListNode clone = (ListNode) super.clone();
+        ListNode clone;
+        try {
+            clone = (ListNode) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new UnexpectedException(e);
+        }
         //noinspection unchecked
         clone.list = (ArrayList<IFNMLNode>) this.list.clone();
         return clone;

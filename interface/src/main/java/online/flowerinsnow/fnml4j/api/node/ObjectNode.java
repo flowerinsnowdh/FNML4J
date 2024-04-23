@@ -1,5 +1,6 @@
 package online.flowerinsnow.fnml4j.api.node;
 
+import online.flowerinsnow.fnml4j.api.exception.UnexpectedException;
 import online.flowerinsnow.fnml4j.api.exception.WrongNodeTypeException;
 import online.flowerinsnow.fnml4j.api.parser.IFNMLNodeParser;
 import online.flowerinsnow.fnml4j.api.util.StringUtils;
@@ -20,24 +21,21 @@ import java.util.*;
  *     }
  * }</pre>
  */
-public class ObjectNode extends NamedNode {
+public class ObjectNode implements IFNMLNode {
     @NotNull private LinkedHashMap<String, IFNMLNode> childNodes;
 
     /**
      * <p>创建一个空的、带名称的FNML对象节点</p>
-     * @param name 名称
      */
-    public ObjectNode(@NotNull String name) {
-        this(name, new LinkedHashMap<>());
+    public ObjectNode() {
+        this(new LinkedHashMap<>());
     }
 
     /**
      * <p>创建一个带数据的、带名称的FNML对象节点</p>
-     * @param name 名称
      * @param childNodes 数据
      */
-    public ObjectNode(@NotNull String name, @NotNull Map<String, IFNMLNode> childNodes) {
-        super(name);
+    public ObjectNode(@NotNull Map<String, IFNMLNode> childNodes) {
         Objects.requireNonNull(childNodes);
         this.childNodes = new LinkedHashMap<>(childNodes);
     }
@@ -171,14 +169,18 @@ public class ObjectNode extends NamedNode {
     @Override
     public String toString() {
         return "ObjectNode{" +
-                "super=" + super.toString() +
-                ", childNodes=" + childNodes +
+                "childNodes=" + childNodes +
                 '}';
     }
 
     @Override
     public ObjectNode clone() {
-        ObjectNode clone = (ObjectNode) super.clone();
+        ObjectNode clone;
+        try {
+            clone = (ObjectNode) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new UnexpectedException(e);
+        }
         //noinspection unchecked
         clone.childNodes = (LinkedHashMap<String, IFNMLNode>) this.childNodes.clone();
         return clone;

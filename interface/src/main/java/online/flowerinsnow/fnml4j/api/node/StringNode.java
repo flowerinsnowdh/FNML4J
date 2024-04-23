@@ -1,5 +1,6 @@
 package online.flowerinsnow.fnml4j.api.node;
 
+import online.flowerinsnow.fnml4j.api.exception.UnexpectedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -13,11 +14,10 @@ import java.util.Objects;
  *     field1 'value1'
  * }</pre>
  */
-public class StringNode extends NamedNode {
+public class StringNode implements IFNMLNode {
     @NotNull private String string;
 
-    public StringNode(@NotNull String name, @NotNull String string) {
-        super(name);
+    public StringNode(@NotNull String string) {
         this.string = Objects.requireNonNull(string);
     }
 
@@ -62,13 +62,16 @@ public class StringNode extends NamedNode {
     @Override
     public String toString() {
         return "StringNode{" +
-                "super=" + super.toString() +
-                ", string='" + string + '\'' +
+                "string='" + string + '\'' +
                 '}';
     }
 
     @Override
     public StringNode clone() {
-        return (StringNode) super.clone();
+        try {
+            return (StringNode) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new UnexpectedException(e);
+        }
     }
 }
