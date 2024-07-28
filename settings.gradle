@@ -1,0 +1,4 @@
+rootProject.name = 'fnml4j'
+include('interface')
+include('core')
+

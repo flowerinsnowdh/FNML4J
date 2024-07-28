@@ -1,0 +1,28 @@
+plugins() {
+    id('java')
+    id('java-library')
+}
+
+group = rootProject.group
+version = rootProject.version
+
+repositories() {
+    mavenCentral()
+}
+
+dependencies() {
+    api(project(':interface'))
+    implementation("org.jetbrains:annotations:${version_jetbrains_annotations}")
+
+    testImplementation(platform("org.junit:junit-bom:${version_junit_bom}"))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+test() {
+    useJUnitPlatform()
+}
+
+java() {
+    withSourcesJar()
+    withJavadocJar()
+}
