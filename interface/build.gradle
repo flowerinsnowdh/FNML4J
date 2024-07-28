@@ -19,3 +19,12 @@ dependencies() {
 test() {
     useJUnitPlatform()
 }
+
+java() {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+jar() {
+    from(rootProject.file('LICENSE'))
+}
