@@ -1,5 +1,7 @@
 plugins() {
     id('java')
+    id('maven-publish')
+    id('signing')
 }
 
 group = rootProject.group
@@ -27,4 +29,41 @@ java() {
 
 jar() {
     from(rootProject.file('LICENSE'))
+}
+
+publishing() {
+    publications() {
+        mavenJava(MavenPublication) {
+            pom() {
+                name = rootProject.name
+                description = 'Flower\'s Node Markdown Language, a simple markdown language made by flowerinsnow'
+                url = 'https://github.com/flowerinsnowdh/FNML4J'
+
+                licenses() {
+                    license() {
+                        name = 'GNU Lesser General Public License, Version 3'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    }
+                }
+
+                developers() {
+                    developer() {
+                        id = 'flowerinsnow'
+                        name = '冬花ice'
+                        email = 'flowerimsnow@gmail.com'
+                    }
+                }
+            }
+
+//            from(components.java)
+        }
+    }
+
+    repositories() {
+        mavenLocal()
+    }
+}
+
+signing() {
+    sign(publishing.publications.mavenJava)
 }
