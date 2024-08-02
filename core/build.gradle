@@ -2,6 +2,7 @@ plugins() {
     id('java')
     id('java-library')
     id('maven-publish')
+    id('signing')
 }
 
 group = rootProject.group
@@ -30,4 +31,51 @@ java() {
 
 jar() {
     from(rootProject.file('LICENSE'))
+}
+
+publishing() {
+    publications() {
+        register('mavenJava', MavenPublication) {
+            repositories() {
+                maven() {
+                    url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                    credentials() {
+                        username = "${System.getenv('REPO_OSSRH_USERNAME')}"
+                        username = "${System.getenv('REPO_OSSRH_PASSWORD')}"
+                    }
+                }
+            }
+
+            pom() {
+                name = rootProject.name
+                description = 'Flower\'s Node Markdown Language, a simple markdown language made by flowerinsnow'
+                url = 'https://github.com/flowerinsnowdh/FNML4J'
+
+                licenses() {
+                    license() {
+                        name = 'GNU Lesser General Public License, Version 3'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    }
+                }
+
+                developers() {
+                    developer() {
+                        id = 'flowerinsnow'
+                        name = '冬花ice'
+                        email = 'flowerimsnow@gmail.com'
+                    }
+                }
+            }
+
+            from(components.java)
+        }
+    }
+
+    repositories() {
+        mavenLocal()
+    }
+}
+
+signing() {
+    sign(publishing.publications.mavenJava)
 }

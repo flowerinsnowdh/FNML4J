@@ -33,7 +33,17 @@ jar() {
 
 publishing() {
     publications() {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
+            repositories() {
+                maven() {
+                    url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                    credentials() {
+                        username = "${System.getenv('REPO_OSSRH_USERNAME')}"
+                        username = "${System.getenv('REPO_OSSRH_PASSWORD')}"
+                    }
+                }
+            }
+
             pom() {
                 name = rootProject.name
                 description = 'Flower\'s Node Markdown Language, a simple markdown language made by flowerinsnow'
@@ -55,7 +65,7 @@ publishing() {
                 }
             }
 
-//            from(components.java)
+            from(components.java)
         }
     }
 
