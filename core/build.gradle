@@ -29,6 +29,18 @@ java() {
     withJavadocJar()
 }
 
+tasks.withType(JavaCompile).configureEach() {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc).configureEach() {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = 'UTF-8'
+}
+
 jar() {
     from(rootProject.file('LICENSE'))
 }
