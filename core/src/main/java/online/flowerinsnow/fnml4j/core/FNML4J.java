@@ -181,7 +181,8 @@ public abstract class FNML4J {
                             escaping = true;
                             break;
                         case '\'': // 字符串结束
-                            IFNMLNode topNode0 = stack.getTopNode();
+                            IFNMLNode topNode0 = stack.getTopNodeOptional()
+                                    .orElse(rootNode);
                             if (topNode0 instanceof ObjectNode) {
                                 ObjectNode topNode = (ObjectNode) topNode0;
                                 topNode.set(keyName, new StringNode(inString.toString()));
