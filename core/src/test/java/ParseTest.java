@@ -10,12 +10,8 @@ import java.io.StringWriter;
 public class ParseTest {
     @Test
     void test() {
-        ObjectNode parse = FNML4J.parse("object [\n" +
-                "    'Hello' # Test\n" +
-                "    {\n" +
-                "        field2 'flowerinsnow\\''\n" +
-                "    }\n" +
-                "]");
+        ObjectNode parse = FNML4J.parse("enable 'true'\n" +
+                "sensitivity '5'");
         StringWriter sw = new StringWriter();
         try {
             parse.writeRoot(0, sw);

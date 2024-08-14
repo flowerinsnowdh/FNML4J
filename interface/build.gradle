@@ -48,10 +48,10 @@ publishing() {
         register('mavenJava', MavenPublication) {
             repositories() {
                 maven() {
-                    url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                    url = "${System.getenv("PUBLISH_REPO_URL")}"
                     credentials() {
-                        username = "${System.getenv('REPO_OSSRH_USERNAME')}"
-                        password = "${System.getenv('REPO_OSSRH_PASSWORD')}"
+                        username = "${System.getenv('PUBLISH_REPO_USERNAME')}"
+                        password = "${System.getenv('PUBLISH_REPO_PASSWORD')}"
                     }
                 }
             }
