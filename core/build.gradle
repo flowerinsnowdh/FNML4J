@@ -47,10 +47,10 @@ jar() {
 
 publishing() {
     publications() {
-        register('mavenJava', MavenPublication) {
+        mavenJava(MavenPublication) {
             repositories() {
                 maven() {
-                    url = "${System.getenv("PUBLISH_REPO_URL")}"
+                    url = "${System.getenv('PUBLISH_REPO_URL')}"
                     credentials() {
                         username = "${System.getenv('PUBLISH_REPO_USERNAME')}"
                         password = "${System.getenv('PUBLISH_REPO_PASSWORD')}"
@@ -76,6 +76,12 @@ publishing() {
                         name = '冬花ice'
                         email = 'flowerimsnow@gmail.com'
                     }
+                }
+
+                scm() {
+                    connection = 'scm:git:git://github.com/flowerinsnowdh/FNML4J.git'
+                    developerConnection = 'scm:git:ssh://github.com:flowerinsnowdh/FNML4J.git'
+                    url = 'https://github.com/flowerinsnowdh/FNML4J/tree/master'
                 }
             }
 
